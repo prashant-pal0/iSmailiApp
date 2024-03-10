@@ -1,19 +1,21 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, UseGuards, applyDecorators, createParamDecorator } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import * as jwt from 'jsonwebtoken'
-import User from "./user.entity";
-
-
-
-
-
-export class AuthGuard implements CanActivate {
-
-    constructor(public readonly userService: UserService,  @InjectRepository(User)
-    private userRepository: Repository<User>) {}
-    
+import {
+    applyDecorators,
+    CanActivate,
+    createParamDecorator,
+    ExecutionContext,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    UseGuards,
+  } from '@nestjs/common'
+  import { errors } from 'error'
+  import * as jwt from 'jsonwebtoken'
+  
+  import { getUserBy } from './user.repository'
+  import { UserService } from './user.service'
+  @Injectable()
+  export class AuthGuard implements CanActivate {
+    constructor(public readonly userService: UserService) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const req = context.switchToHttp().getRequest()
       if (!req.headers.authorization && !(req.query.apiKey && req.query.email && req.query.operatorId)) return false
@@ -27,20 +29,25 @@ export class AuthGuard implements CanActivate {
         if (auth.split(' ')[0] !== 'Bearer') throw new HttpException('Invalid access token', HttpStatus.FORBIDDEN)
         const token = auth.split(' ')[1]
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET)
-        const userDetails = await this.userRepository.findOne(decoded.id)
-        if (!userDetails) throw new Error('User not found')
+        const userDetails = await getUserBy({ phone: decoded.phone })
+        if (!userDetails) errors.UserNotFound
+        // await this.userService.checkEmailValidity(userDetails.email)
         return decoded
       } catch (error) {
-         throw new Error('User not found')
+        throw errors.Logout
       }
     }
   }
-
-
-export function Auth() {
+  
+  export function Auth() {
     return applyDecorators(UseGuards(AuthGuard))
   }
-
+  
   export const GetUserId = createParamDecorator((data, req): string => {
     return req.args[0].user.id
   })
+  
+  export const GetOperatorId = createParamDecorator((data, req): string => {
+    return req.args[0].user.operatorId
+  })
+  

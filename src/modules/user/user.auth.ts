@@ -3,7 +3,7 @@ import { UserService } from "./user.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as jwt from 'jsonwebtoken'
-import User from "./user.entity";
+import { Users } from "./user.entity";
 
 
 
@@ -11,8 +11,8 @@ import User from "./user.entity";
 
 export class AuthGuard implements CanActivate {
 
-    constructor(public readonly userService: UserService,  @InjectRepository(User)
-    private userRepository: Repository<User>) {}
+    constructor(public readonly userService: UserService,  @InjectRepository(Users)
+    private userRepository: Repository<Users>) {}
     
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const req = context.switchToHttp().getRequest()

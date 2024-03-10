@@ -81,6 +81,3 @@ export class Users extends CreatedModified implements UserInterface {
 }
 
 
-export default Users;
-
-

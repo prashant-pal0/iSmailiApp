@@ -4,12 +4,12 @@ dotenv.config()
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: 'localhost',
-  username: 'postgres' ,
-  password: '9389110347',
-  database: 'postgres',
+  username: 'postgres',
+  password: 'root',
+  database: 'ismaili',
   port: 5432,
-  synchronize: false,
-  entities: ['dist/modules/**/*.entity.js'],
+  synchronize: true,
+  entities: [__dirname + '/../**/**/*.entity.{js,ts}']
 }
 
 const initializeDataSource = async () => {

@@ -19,7 +19,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { Users, VerificationCodes } from './user.entity'
 import { Repository } from 'typeorm'
-import { getUserBy, getUserDetails, getVerificationCodesBy } from './user.repository'
+import {
+  getUserBy,
+  getUserDetails,
+  getVerificationCodesBy
+} from './user.repository'
 import { Constants, defaultDomain } from 'helper'
 import { JwtService } from '@nestjs/jwt'
 import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO } from './user.dto'
@@ -62,7 +66,10 @@ export class UserService {
 
       // const client = require('twilio')(accountSid, authToken)
 
-      const verificationCode = await this.getVerificationCode(phoneNumber)
+      const verificationCode = await this.getVerificationCode(
+        phoneNumber
+        // userId
+      )
 
       // client.messages
       //   .create({
@@ -105,6 +112,7 @@ export class UserService {
       const verificationCode = Math.floor(
         100000 + Math.random() * 900000
       ).toString()
+      console.log('orp---', verificationCode)
       const salt = this.configService.get('SALT_HASH')
       const verificationCodeHash = await bcrypt.hash(
         verificationCode,
@@ -134,13 +142,14 @@ export class UserService {
   async verifyOTP(userId: string, code: string): Promise<any> {
     try {
       let userDetails = await getUserBy({ id: userId })
-
+      console.log('userDetails---', userDetails)
       // If user details do not exist, create a new entry
       if (!userDetails) {
-        userDetails = await this.userRepository.create({
-          id: userId,
-          isPhoneVerified: false
-        })
+        // userDetails = await this.userRepository.create({
+        //   id: userId,
+        //   isPhoneVerified: false
+        // })
+        throw new NotFoundException('user not found!')
       }
 
       const verificationCodeDetails = await getVerificationCodesBy({ userId })
@@ -207,7 +216,21 @@ export class UserService {
 
 */
   async addUserProfile(
-    { name, phone, bio, profilePic, ZodiacSign,lookingFor, socialProfile, email, birthday, gender,religious,height,education }: CreateProfileDTO,
+    {
+      name,
+      phone,
+      bio,
+      profilePic,
+      ZodiacSign,
+      lookingFor,
+      socialProfile,
+      email,
+      birthday,
+      gender,
+      religious,
+      height,
+      education
+    }: CreateProfileDTO,
     userId: string
   ) {
     try {
@@ -267,7 +290,6 @@ export class UserService {
         email: emailUpdate ? email : userDetails.email,
         ZodiacSign: ZodiacSign ? ZodiacSign : userDetails.ZodiacSign,
         lookingFor: lookingFor ? lookingFor : userDetails.lookingFor
-
       }
       await this.userRepository.update({ id: userId }, data)
       userDetails = await getUserBy({ id: userId }, [
@@ -294,28 +316,32 @@ export class UserService {
     }
   }
 
-
-   /** Retrieves the user profile by user ID.
+  /** Retrieves the user profile by user ID.
    * @param {string} userId
    */
-   async getUserProfile(userId: string) {
+  async getUserProfile(userId: string) {
     try {
       const userDetails = await getUserDetails(userId)
       const regexPattern = new RegExp(defaultDomain, 'g')
-      userDetails.email = regexPattern.test(userDetails.email) ? '' : userDetails.email
+      userDetails.email = regexPattern.test(userDetails.email)
+        ? ''
+        : userDetails.email
       const completeUserInfo: any = {
         ...userDetails
       }
-      return { message: "User profile details", data: completeUserInfo }
+      return { message: 'User profile details', data: completeUserInfo }
     } catch (error) {
       this.logger.error(error.message)
       throw new BadRequestException(error.message)
     }
   }
 
-  async addUserImages({ imageUrl,imageType  }: AddUserImagesDTO, userId: string) {
+  async addUserImages(
+    { imageUrl, imageType }: AddUserImagesDTO,
+    userId: string
+  ) {
     try {
-      const condition: any = { where: { userId } };
+      const condition: any = { where: { userId } }
       const userDetails = await this.userRepository.find(condition)
       if (!userDetails) throw errors.UserNotFound
       const data = {
@@ -323,7 +349,6 @@ export class UserService {
         userId,
         imageUrl,
         imageType
-
       }
       await this.userRepository.save(data)
 
@@ -338,10 +363,8 @@ export class UserService {
 
   async getRandomUser(): Promise<Users> {
     // Fetch a random user from the database (you can customize this logic)
-    const users = await this.userRepository.find();
-    const randomIndex = Math.floor(Math.random() * users.length);
-    return users[randomIndex];
+    const users = await this.userRepository.find()
+    const randomIndex = Math.floor(Math.random() * users.length)
+    return users[randomIndex]
   }
-
-
 }

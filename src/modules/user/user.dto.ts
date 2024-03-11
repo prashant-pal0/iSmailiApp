@@ -45,7 +45,7 @@ export class VerifyOtpDto {
   // @IsString()
   // @IsNotEmpty({ message: 'Phone number is required' })
   // @Matches(/^\d{10}$/, { message: 'Invalid phone number format' })
-  // phone: string;
+  // phone: string
 
   @IsString()
   @IsNotEmpty({ message: 'OTP is required' })

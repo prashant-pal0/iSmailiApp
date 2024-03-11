@@ -19,15 +19,17 @@ export class UserController {
     return await this.userService.sendOtp(data)
   }
 
-  @Post('/verifyOtp')
-  @Auth()
+  @Post('/verifyOtp/:id')
+  // @Auth()
   // @ApiBearerAuth()
   async verifyOtp(
-    @GetUserId('id') userId: string,
+    @Param('id') userId: string,
     @Body() data: VerifyOtpDto
   ): Promise<{ msg: string }> {
     // let prefix = '+91';
     // let phone = prefix.concat(data.phone);
+    console.log('userId---', userId)
+
     return await this.userService.verifyOTP(userId, data.otp)
   }
 

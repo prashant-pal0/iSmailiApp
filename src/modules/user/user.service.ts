@@ -19,10 +19,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { Users, VerificationCodes } from './user.entity'
 import { Repository } from 'typeorm'
-import { getUserBy, getVerificationCodesBy } from './user.repository'
+import { getUserBy, getUserDetails, getVerificationCodesBy } from './user.repository'
 import { Constants, defaultDomain } from 'helper'
 import { JwtService } from '@nestjs/jwt'
-import { CreateProfileDTO, OnboardDTO } from './user.dto'
+import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO } from './user.dto'
 import { NotFoundError } from 'rxjs'
 
 @Injectable()
@@ -55,7 +55,6 @@ export class UserService {
       if (!data.countryCode)
         throw new NotFoundException('CountryCode not exists!')
       const phoneNumber = data.countryCode + data.data
-      console.log(phoneNumber)
       await this.phoneLogin(phoneNumber)
 
       const accountSid = this.configService.get('TWILIO_ACCOUNT_SID')
@@ -208,7 +207,7 @@ export class UserService {
 
 */
   async addUserProfile(
-    { name, phone, bio, profilePic, socialProfile, email }: CreateProfileDTO,
+    { name, phone, bio, profilePic, ZodiacSign,lookingFor, socialProfile, email, birthday, gender,religious,height,education }: CreateProfileDTO,
     userId: string
   ) {
     try {
@@ -255,12 +254,20 @@ export class UserService {
         if (emailUserDetails) throw errors.EmailAlreadyExists
       }
       const data: Partial<Users> = {
-        name: name ? name : userDetails.name,
+        fullName: name ? name : userDetails.fullName,
         phone: phone ? phone : userDetails.phone,
+        birthday: birthday ? birthday : userDetails.birthday,
+        height: height ? height : userDetails.height,
+        gender: gender ? gender : userDetails.gender,
+        education: education ? education : userDetails.education,
+        religious: religious ? religious : userDetails.religious,
         bio: bio ? bio : userDetails.bio,
         profilePic: profilePic ? profilePic : userDetails.profilePic,
         socialProfile: updateSocialProfile,
-        email: emailUpdate ? email : userDetails.email
+        email: emailUpdate ? email : userDetails.email,
+        ZodiacSign: ZodiacSign ? ZodiacSign : userDetails.ZodiacSign,
+        lookingFor: lookingFor ? lookingFor : userDetails.lookingFor
+
       }
       await this.userRepository.update({ id: userId }, data)
       userDetails = await getUserBy({ id: userId }, [
@@ -286,4 +293,55 @@ export class UserService {
       throw new BadRequestException(error.message)
     }
   }
+
+
+   /** Retrieves the user profile by user ID.
+   * @param {string} userId
+   */
+   async getUserProfile(userId: string) {
+    try {
+      const userDetails = await getUserDetails(userId)
+      const regexPattern = new RegExp(defaultDomain, 'g')
+      userDetails.email = regexPattern.test(userDetails.email) ? '' : userDetails.email
+      const completeUserInfo: any = {
+        ...userDetails
+      }
+      return { message: "User profile details", data: completeUserInfo }
+    } catch (error) {
+      this.logger.error(error.message)
+      throw new BadRequestException(error.message)
+    }
+  }
+
+  async addUserImages({ imageUrl,imageType  }: AddUserImagesDTO, userId: string) {
+    try {
+      const condition: any = { where: { userId } };
+      const userDetails = await this.userRepository.find(condition)
+      if (!userDetails) throw errors.UserNotFound
+      const data = {
+        id: uuid(),
+        userId,
+        imageUrl,
+        imageType
+
+      }
+      await this.userRepository.save(data)
+
+      return {
+        message: 'User Images saved successfully.'
+      }
+    } catch (error) {
+      this.logger.error(error.message)
+      throw new BadRequestException(error.message)
+    }
+  }
+
+  async getRandomUser(): Promise<Users> {
+    // Fetch a random user from the database (you can customize this logic)
+    const users = await this.userRepository.find();
+    const randomIndex = Math.floor(Math.random() * users.length);
+    return users[randomIndex];
+  }
+
+
 }

@@ -1,7 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common'
 import { UserService } from './user.service'
-import { CreateProfileDTO, OnboardDTO, UserDTO, VerifyOtpDto } from './user.dto'
+import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, UserDTO, VerifyOtpDto } from './user.dto'
 import { Auth, GetUserId } from './user.auth'
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth, ApiForbiddenResponse, ApiOperation
+
+} from '@nestjs/swagger'
 
 @Controller('user')
 export class UserController {
@@ -34,4 +39,39 @@ export class UserController {
   ) {
     return await this.userService.addUserProfile(createProfileDTO, userId)
   }
+
+
+
+  @Get('details')
+  @Auth()
+  @ApiForbiddenResponse({ description: 'Invalid access token' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Fetch profile details' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @HttpCode(HttpStatus.OK)
+  async getUserProfile(@GetUserId('id') userId: string) {
+    return await this.userService.getUserProfile(userId)
+  }
+
+  @Post('/image')
+  @Auth()
+  @ApiBearerAuth()
+  async addUserImages(
+    @GetUserId('id') userId: string,
+    @Body() addUserImagesDTO: AddUserImagesDTO
+  ) {
+    return await this.userService.addUserImages(addUserImagesDTO, userId)
+  }
+
+
+  @Get('/random')
+  async getRandomUser() {
+    return this.userService.getRandomUser();
+
+  }
+
+
+  
+
+
 }

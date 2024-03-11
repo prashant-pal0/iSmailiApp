@@ -1,6 +1,7 @@
 import { CreatedModified } from 'helper';
 import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface';
+import { LookingForDTO } from './user.dto';
  
 
  
@@ -40,7 +41,51 @@ export class Users extends CreatedModified implements UserInterface {
   emailVerified: boolean
 
   @Column({ nullable: true })
-  name: string
+  fullName: string
+
+  @Column({ nullable: true })
+  birthday: string
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  religious: object
+
+  @Column({ nullable: true })
+  height: string
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  gender: object
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  education: object
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  yourInterest: object
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  lookingFor: object
+
+
+  
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  ZodiacSign: object
 
   @Column({ nullable: true })
   fbId: string
@@ -79,5 +124,34 @@ export class Users extends CreatedModified implements UserInterface {
   @Column({ default: RolesEnum.User })
   role: RolesEnum
 }
+
+
+
+
+@Entity()
+export class userImages extends CreatedModified   {
+  @PrimaryColumn()
+  id: string
+
+  @Column({ nullable: true })
+  userId: string
+
+  @Column({ type: 'jsonb', nullable: true })
+  userImages: object
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

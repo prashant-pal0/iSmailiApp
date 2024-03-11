@@ -6,6 +6,24 @@ export enum OnboardingTypeEnum {
     External = 5,
   }
 
+  export enum UserImageType {
+    Profile = 1
+  }
+
+  export enum zodiacEnum {
+    Aries = 1,
+  Taurus = 2,
+  Gemini = 3
+  }
+
+  export enum EducationLevel {
+
+    HighSchool = 1,
+    Bachelor = 2,
+    Master = 3
+
+  }
+
 
   export interface UserInterface {
     id: string

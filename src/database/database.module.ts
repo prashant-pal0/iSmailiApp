@@ -3,11 +3,11 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: 'localhost',
-  username: 'postgres',
-  password: 'root',
-  database: 'ismaili',
-  port: 5432,
+  host: process.env.POSTGRES_HOST,
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
+  port: parseInt(process.env.POSTGRES_PORT),
   synchronize: true,
   entities: [__dirname + '/../**/**/*.entity.{js,ts}']
 }

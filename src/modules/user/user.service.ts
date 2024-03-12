@@ -26,8 +26,9 @@ import {
 } from './user.repository'
 import { Constants, defaultDomain } from 'helper'
 import { JwtService } from '@nestjs/jwt'
-import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO } from './user.dto'
+import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, VerifyOtpDto } from './user.dto'
 import { NotFoundError } from 'rxjs'
+import { error } from 'console'
 
 @Injectable()
 export class UserService {
@@ -118,6 +119,7 @@ export class UserService {
         verificationCode,
         parseInt(salt)
       )
+      console.log(verificationCode)
       const verificationCodeDetails: VerificationCodeInterface = {
         userId: uuid(),
         code: verificationCodeHash,
@@ -139,33 +141,36 @@ export class UserService {
    * @param {VerifyOTPDTO} verifyOTPDTO
    * @param {number} operatorId
    */
-  async verifyOTP(userId: string, code: string): Promise<any> {
+  async verifyOTP(data: VerifyOtpDto): Promise<any> {
     try {
-      let userDetails = await getUserBy({ id: userId })
-      console.log('userDetails---', userDetails)
+      let userDetails = await getUserBy({ id: data.userId })
+      console.log(userDetails)
+      console.log("hwy")
       // If user details do not exist, create a new entry
       if (!userDetails) {
-        // userDetails = await this.userRepository.create({
-        //   id: userId,
-        //   isPhoneVerified: false
-        // })
-        throw new NotFoundException('user not found!')
+        console.log("save")
+        userDetails = await this.userRepository.create({
+          id: data.userId,
+          isPhoneVerified: false
+        })
+        console.log("bye")
       }
 
-      const verificationCodeDetails = await getVerificationCodesBy({ userId })
+      const verificationCodeDetails = await getVerificationCodesBy({ userId: data.userId })
+      console.log("cjdscl", verificationCodeDetails)
       if (!verificationCodeDetails) throw errors.InvalidVerificationCode
 
       const date = new Date()
       if (
         verificationCodeDetails.created.getTime() +
-          Constants.OTPExpiry * 60 * 1000 <
+        Constants.OTPExpiry * 60 * 1000 <
         date.getTime()
       ) {
         throw errors.InvalidVerificationCode
       }
 
       if (
-        !(await bcrypt.compare(code.toString(), verificationCodeDetails.code))
+        !(await bcrypt.compare(data.otp.toString(), verificationCodeDetails.code))
       ) {
         throw errors.InvalidVerificationCode
       }
@@ -176,14 +181,14 @@ export class UserService {
         })
       }
 
-      await this.verificationCodesRepository.delete({ userId })
+      await this.verificationCodesRepository.delete({ userId: data.userId })
       await this.userRepository.update(
         { id: userDetails.id },
         { lastLogin: new Date() }
       )
 
       const token = await this.generateToken(
-        userId,
+        data.userId,
         verificationCodeDetails.phone
       )
 
@@ -245,23 +250,23 @@ export class UserService {
         updateSocialProfile.instagram = socialProfile['instagram']
           ? socialProfile['instagram']
           : userDetails.socialProfile && userDetails.socialProfile['instagram']
-          ? userDetails.socialProfile['instagram']
-          : ''
+            ? userDetails.socialProfile['instagram']
+            : ''
         updateSocialProfile.discord = socialProfile['discord']
           ? socialProfile['discord']
           : userDetails.socialProfile && userDetails.socialProfile['discord']
-          ? userDetails.socialProfile['discord']
-          : ''
+            ? userDetails.socialProfile['discord']
+            : ''
         updateSocialProfile.telegram = socialProfile['telegram']
           ? socialProfile['telegram']
           : userDetails.socialProfile && userDetails.socialProfile['telegram']
-          ? userDetails.socialProfile['telegram']
-          : ''
+            ? userDetails.socialProfile['telegram']
+            : ''
         updateSocialProfile.twitter = socialProfile['twitter']
           ? socialProfile['twitter']
           : userDetails.socialProfile && userDetails.socialProfile['twitter']
-          ? userDetails.socialProfile['twitter']
-          : ''
+            ? userDetails.socialProfile['twitter']
+            : ''
       }
       let emailUpdate = false
       if (email) {

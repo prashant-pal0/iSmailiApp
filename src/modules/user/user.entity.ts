@@ -2,9 +2,9 @@ import { CreatedModified } from 'helper';
 import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface';
 import { LookingForDTO } from './user.dto';
- 
 
- 
+
+
 @Entity()
 @Index(['userId', 'code'])
 export class VerificationCodes extends CreatedModified implements VerificationCodeInterface {
@@ -23,9 +23,7 @@ export class VerificationCodes extends CreatedModified implements VerificationCo
 
 
 @Entity()
-@Unique('emailoperator', ['email', 'operatorId'])
-@Unique('phoneoperator', ['phone', 'operatorId'])
-@Unique(['email', 'operatorId'])
+@Unique(['email', 'phone'])
 export class Users extends CreatedModified implements UserInterface {
   @PrimaryColumn()
   id: string
@@ -80,7 +78,7 @@ export class Users extends CreatedModified implements UserInterface {
   lookingFor: object
 
 
-  
+
   @Column({
     type: 'jsonb',
     nullable: true,
@@ -125,11 +123,8 @@ export class Users extends CreatedModified implements UserInterface {
   role: RolesEnum
 }
 
-
-
-
 @Entity()
-export class userImages extends CreatedModified   {
+export class userImages extends CreatedModified {
   @PrimaryColumn()
   id: string
 
@@ -139,7 +134,6 @@ export class userImages extends CreatedModified   {
   @Column({ type: 'jsonb', nullable: true })
   userImages: object
 }
-
 
 
 

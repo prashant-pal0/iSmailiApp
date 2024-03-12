@@ -10,7 +10,7 @@ import {
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('/sendOtp')
   async sendOtp(@Body() data: OnboardDTO): Promise<{ msg: string }> {
@@ -19,22 +19,18 @@ export class UserController {
     return await this.userService.sendOtp(data)
   }
 
-  @Post('/verifyOtp/:id')
-  // @Auth()
-  // @ApiBearerAuth()
+  @Post('/verifyOtp')
   async verifyOtp(
-    @Param('id') userId: string,
     @Body() data: VerifyOtpDto
   ): Promise<{ msg: string }> {
     // let prefix = '+91';
     // let phone = prefix.concat(data.phone);
-    console.log('userId---', userId)
-
-    return await this.userService.verifyOTP(userId, data.otp)
+    return await this.userService.verifyOTP(data)
   }
 
-  @Post('profile')
+  @Post('/profile')
   @Auth()
+  @ApiBearerAuth()
   async addUserProfile(
     @GetUserId('id') userId: string,
     @Body() createProfileDTO: CreateProfileDTO

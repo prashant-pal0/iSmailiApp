@@ -28,25 +28,30 @@ export class UserDTO {
 }
 
 export class OnboardDTO {
+  @ApiProperty({
+    description: 'The type of login used to onboard the user (Email = 1, Facebook = 2, Google = 3, Phone = 4)',
+  })
   @IsNumber()
   @IsNotEmpty()
   loginType: OnboardingTypeEnum
 
+  @ApiProperty({ description: 'Email/phone/ExternalToken of the user' })
   @IsNotEmpty()
   @IsString()
   data: string
 
+  @ApiProperty({ description: 'Email/phone/ExternalToken of the user' })
   @ValidateIf((o: OnboardDTO) => o.loginType === OnboardingTypeEnum.PhoneOTP)
   @IsNotEmpty()
   countryCode?: string
 }
 
 export class VerifyOtpDto {
-  // @IsString()
-  // @IsNotEmpty({ message: 'Phone number is required' })
-  // @Matches(/^\d{10}$/, { message: 'Invalid phone number format' })
-  // phone: string
+  @ApiProperty({ description: 'The verification code received on the provided data' })
+  @IsString()
+  userId: string;
 
+  @ApiProperty({ description: 'The verification code received on the provided data' })
   @IsString()
   @IsNotEmpty({ message: 'OTP is required' })
   @Length(6, 6, { message: 'OTP must be exactly 6 characters long' })
@@ -131,14 +136,18 @@ export class ZodiacDTO {
 }
 
 export class CreateProfileDTO {
+  @ApiPropertyOptional({ description: 'Name of the user' })
   @IsOptional()
   @IsString()
   name: string
 
+  
+  @ApiPropertyOptional({ description: 'Phone number of the user' })
   @IsOptional()
   @IsString()
   phone: string
 
+  @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsOptional()
   @IsString()
   birthday: string
@@ -178,13 +187,16 @@ export class CreateProfileDTO {
   @IsString()
   bio: string
 
+  @ApiPropertyOptional({ description: 'Profile picture link' })
   @IsOptional()
   @IsString()
   profilePic: string
 
+  @ApiPropertyOptional({ description: 'Social profiles of the user' })
   @IsOptional()
   socialProfile: SocialProfileDTO
 
+  @ApiPropertyOptional({ description: 'The email address of the user profile', format: 'email' })
   @IsOptional()
   @IsEmail()
   email: string

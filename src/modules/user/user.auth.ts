@@ -11,7 +11,8 @@ import { Users } from "./user.entity";
 
 export class AuthGuard implements CanActivate {
 
-    constructor(public readonly userService: UserService,  @InjectRepository(Users)
+    constructor(public readonly userService: UserService,  
+    @InjectRepository(Users)
     private userRepository: Repository<Users>) {}
     
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -23,11 +24,12 @@ export class AuthGuard implements CanActivate {
   
     async validateToken(auth: string) {
       try {
-        console.log('heerrrrrrrrrrrrr')
         if (auth.split(' ')[0] !== 'Bearer') throw new HttpException('Invalid access token', HttpStatus.FORBIDDEN)
         const token = auth.split(' ')[1]
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET)
-        const userDetails = await this.userRepository.findOne(decoded.id)
+        console.log("hello", decoded.id)
+        const userDetails = await this.userRepository.findOne({where:{id: decoded.id}})
+        console.log(userDetails)
         if (!userDetails) throw new Error('User not found')
         return decoded
       } catch (error) {

@@ -66,16 +66,18 @@ export class UserService {
       const accountSid = this.configService.get('TWILIO_ACCOUNT_SID')
       const authToken = this.configService.get('TWILIO_AUTH_TOKEN')
 
+      console.log(accountSid, authToken)
       const client = require('twilio')(accountSid, authToken)
 
       const verificationCode = await this.getVerificationCode(
         phoneNumber
         // userId
       )
+      console.log(phoneNumber, data.data)
 
       client.messages
         .create({
-          body: `"Hello IsmailiApp User, Your OTP for verification is: ${verificationCode.code} Please enter this code to complete the verification process. Thank you,📱🔒`,
+          body: `"Hello IsmailiApp User, Your OTP for verification is: ${verificationCode.verificationCode} Please enter this code to complete the verification process. Thank you,📱🔒`,
           to: `${phoneNumber}`, // Text your number
           from: '+12568012812' // From a valid Twilio number
         })
@@ -123,8 +125,9 @@ export class UserService {
         parseInt(salt)
       )
       const existUser = await getUserBy({ phone: phoneNumber })
+      console.log('jp',existUser)
       const verificationCodeDetails: VerificationCodeInterface = {
-        userId: existUser.id || uuid(),
+        userId: existUser?.id || uuid(),
         code: verificationCodeHash,
         phone: phoneNumber, // make for email login also phone --> data
         verificationCodeType: VerificationCodeTypeEnum.Phone
@@ -132,7 +135,7 @@ export class UserService {
       await this.verificationCodesRepository.delete({ phone: phoneNumber })
       await this.verificationCodesRepository.insert(verificationCodeDetails)
 
-      return verificationCodeDetails
+      return {...verificationCodeDetails, verificationCode }
     } catch (error) {
       this.logger.error(error.message)
       throw new BadRequestException(error.message)
@@ -170,11 +173,13 @@ export class UserService {
 
       let existingUser = false
       if (!userDetails) {
-        await this.userRepository.create({
+        const details = {
           id: data.userId,
           isPhoneVerified: true,
           lastLogin: new Date()
-        })
+        }
+        // await t/his.userRepository.create()
+        await this.userRepository.insert(details)
       } else {
         existingUser = true
         await this.userRepository.update(userDetails.id, {

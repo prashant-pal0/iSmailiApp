@@ -13,7 +13,7 @@ import {
   MinLength,
   ValidateIf
 } from 'class-validator'
-import { EducationLevel, OnboardingTypeEnum, UserImageType, zodiacEnum } from './user.interface'
+import { EducationLevel, GenderEnum, OnboardingTypeEnum, PurposeEnum, UserImageType, zodiacEnum } from './user.interface'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class UserDTO {
@@ -87,12 +87,12 @@ export class SocialProfileDTO {
 export class LookingForDTO {
   @ApiProperty({ description: 'The ID of template.' })
   @IsNotEmpty()
-  @IsString()
-  lookingFor: string;
+  @IsEnum(PurposeEnum)
+  purpose: PurposeEnum;
 
   
   @ApiProperty({ description: 'The ID of template.' })
- @IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   dreamDate: string;
 
@@ -118,9 +118,6 @@ export class ZodiacDTO {
   @IsEnum(zodiacEnum)
   zodiac: zodiacEnum;
 
-  @IsNotEmpty()
-  @IsEnum(EducationLevel)
-  education: EducationLevel;
 
   @IsNotEmpty()
   @IsEnum(['Regularly', 'Never', 'Socially'])
@@ -130,9 +127,6 @@ export class ZodiacDTO {
   @IsEnum(['Regularly', 'Never', 'Socially'])
   drink: string;
 
-  @IsString()
-  @Length(0, 150)
-  aboutMe?: string; 
 }
 
 export class CreateProfileDTO {
@@ -154,28 +148,29 @@ export class CreateProfileDTO {
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsOptional()
-  @IsObject()
-  religious: object
+  @IsString()
+  religion: string
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsOptional()
   @IsString()
   height: string
 
-  @ApiPropertyOptional({ description: 'Bio of the user' })
-  @IsOptional()
-  @IsObject()
-  gender: object
+  
+  @IsNotEmpty()
+  @IsEnum(EducationLevel)
+  education: EducationLevel;
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
-  @IsOptional()
-  @IsObject()
-  education: object
+  @IsString()
+  gender: string
 
-  @ApiPropertyOptional({ description: 'Bio of the user' })
-  @IsOptional()
-  @IsObject()
-  yourInterest:object
+
+
+  // @ApiPropertyOptional({ description: 'Bio of the user' })
+  // @IsOptional()
+  // @IsObject()
+  // yourInterest:object
 
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
@@ -187,14 +182,10 @@ export class CreateProfileDTO {
   @IsString()
   bio: string
 
-  @ApiPropertyOptional({ description: 'Profile picture link' })
-  @IsOptional()
-  @IsString()
-  profilePic: string
 
-  @ApiPropertyOptional({ description: 'Social profiles of the user' })
-  @IsOptional()
-  socialProfile: SocialProfileDTO
+  // @ApiPropertyOptional({ description: 'Social profiles of the user' })
+  // @IsOptional()
+  // socialProfile: SocialProfileDTO
 
   @ApiPropertyOptional({ description: 'The email address of the user profile', format: 'email' })
   @IsOptional()

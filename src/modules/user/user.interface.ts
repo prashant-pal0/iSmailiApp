@@ -24,12 +24,24 @@ export enum OnboardingTypeEnum {
 
   }
 
+  export enum PurposeEnum {
+
+  }
+
+  export enum GenderEnum {
+
+  }
+
+
+
 
   export interface UserInterface {
     id: string
     email: string
     password?: string
     emailVerified?: boolean
+    gender:string
+    education:EducationLevel
     fbId?: string
     instaId?: string
     name?: string

@@ -1,6 +1,6 @@
 import { CreatedModified } from 'helper';
 import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface';
+import { EducationLevel, RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface';
 import { LookingForDTO } from './user.dto';
 
 
@@ -32,6 +32,7 @@ export class Users extends CreatedModified implements UserInterface {
   @Column({ nullable: true })
   email: string
 
+
   @Column({ default: false })
   deleted: boolean
 
@@ -45,25 +46,22 @@ export class Users extends CreatedModified implements UserInterface {
   birthday: string
 
   @Column({
-    type: 'jsonb',
     nullable: true,
   })
-  religious: object
+  religion: string
 
   @Column({ nullable: true })
   height: string
 
   @Column({
-    type: 'jsonb',
     nullable: true,
   })
-  gender: object
+  gender: string
 
   @Column({
-    type: 'jsonb',
     nullable: true,
   })
-  education: object
+  education: EducationLevel
 
   @Column({
     type: 'jsonb',
@@ -76,7 +74,6 @@ export class Users extends CreatedModified implements UserInterface {
     nullable: true,
   })
   lookingFor: object
-
 
 
   @Column({

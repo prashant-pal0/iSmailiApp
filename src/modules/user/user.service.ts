@@ -56,6 +56,7 @@ export class UserService {
   }
 
   async sendOtp(data: OnboardDTO) {
+
     if (data.loginType == OnboardingTypeEnum.PhoneOTP) {
       if (!data.countryCode)
         throw new NotFoundException('CountryCode not exists!')
@@ -65,21 +66,24 @@ export class UserService {
       const accountSid = this.configService.get('TWILIO_ACCOUNT_SID')
       const authToken = this.configService.get('TWILIO_AUTH_TOKEN')
 
-      // const client = require('twilio')(accountSid, authToken)
+      const client = require('twilio')(accountSid, authToken)
 
       const verificationCode = await this.getVerificationCode(
         phoneNumber
         // userId
       )
 
-      // client.messages
-      //   .create({
-      //     body: `"Hello IsmailiApp User, Your OTP for verification is: ${verificationCode.code} Please enter this code to complete the verification process. Thank you,📱🔒`,
-      //     to: `${phoneNumber}`, // Text your number
-      //     from: '+12568012812' // From a valid Twilio number
-      //   })
-      //   .then((message: any) => console.log(message.sid))
-      console.log('otp--', verificationCode)
+      client.messages
+        .create({
+          body: `"Hello IsmailiApp User, Your OTP for verification is: ${verificationCode.code} Please enter this code to complete the verification process. Thank you,📱🔒`,
+          to: `${phoneNumber}`, // Text your number
+          from: '+12568012812' // From a valid Twilio number
+        })
+        .then((message: any) => console.log(message.sid))
+        .catch((error) => {
+          console.log(error)
+          throw errors.InvalidCredentials
+        })
       return {
         msg: 'OTP sent successfully on your phone ! ',
         userId: verificationCode.userId
@@ -113,21 +117,19 @@ export class UserService {
       const verificationCode = Math.floor(
         100000 + Math.random() * 900000
       ).toString()
-      console.log('orp---', verificationCode)
       const salt = this.configService.get('SALT_HASH')
       const verificationCodeHash = await bcrypt.hash(
         verificationCode,
         parseInt(salt)
       )
-      console.log(verificationCode)
+      const existUser = await getUserBy({ phone: phoneNumber })
       const verificationCodeDetails: VerificationCodeInterface = {
-        userId: uuid(),
+        userId: existUser.id || uuid(),
         code: verificationCodeHash,
-        phone: phoneNumber,
+        phone: phoneNumber, // make for email login also phone --> data
         verificationCodeType: VerificationCodeTypeEnum.Phone
       }
-      console.log(verificationCodeDetails)
-      // await this.verificationCodesRepository.delete({ phone:phoneNumber })
+      await this.verificationCodesRepository.delete({ phone: phoneNumber })
       await this.verificationCodesRepository.insert(verificationCodeDetails)
 
       return verificationCodeDetails
@@ -144,21 +146,12 @@ export class UserService {
   async verifyOTP(data: VerifyOtpDto): Promise<any> {
     try {
       let userDetails = await getUserBy({ id: data.userId })
-      console.log(userDetails)
-      console.log("hwy")
       // If user details do not exist, create a new entry
-      if (!userDetails) {
-        console.log("save")
-        userDetails = await this.userRepository.create({
-          id: data.userId,
-          isPhoneVerified: false
-        })
-        console.log("bye")
-      }
 
       const verificationCodeDetails = await getVerificationCodesBy({ userId: data.userId })
-      console.log("cjdscl", verificationCodeDetails)
       if (!verificationCodeDetails) throw errors.InvalidVerificationCode
+
+
 
       const date = new Date()
       if (
@@ -175,17 +168,23 @@ export class UserService {
         throw errors.InvalidVerificationCode
       }
 
-      if (!userDetails.isPhoneVerified) {
+      let existingUser = false
+      if (!userDetails) {
+        await this.userRepository.create({
+          id: data.userId,
+          isPhoneVerified: true,
+          lastLogin: new Date()
+        })
+      } else {
+        existingUser = true
         await this.userRepository.update(userDetails.id, {
-          isPhoneVerified: true
+          isPhoneVerified: true,
+          lastLogin: new Date()
+
         })
       }
 
       await this.verificationCodesRepository.delete({ userId: data.userId })
-      await this.userRepository.update(
-        { id: userDetails.id },
-        { lastLogin: new Date() }
-      )
 
       const token = await this.generateToken(
         data.userId,
@@ -196,8 +195,9 @@ export class UserService {
         message: 'verified successfully',
         data: {
           token,
-          userId: verificationCodeDetails.userId
-        }
+          userId: verificationCodeDetails.userId,
+          existingUser,
+        } 
       }
     } catch (error) {
       this.logger.error('Error', JSON.stringify(error.message))
@@ -225,14 +225,12 @@ export class UserService {
       name,
       phone,
       bio,
-      profilePic,
       ZodiacSign,
       lookingFor,
-      socialProfile,
       email,
       birthday,
       gender,
-      religious,
+      religion,
       height,
       education
     }: CreateProfileDTO,
@@ -240,34 +238,34 @@ export class UserService {
   ) {
     try {
       let userDetails = await getUserBy({ id: userId })
-      const updateSocialProfile = {
-        instagram: '',
-        discord: '',
-        telegram: '',
-        twitter: ''
-      }
-      if (socialProfile) {
-        updateSocialProfile.instagram = socialProfile['instagram']
-          ? socialProfile['instagram']
-          : userDetails.socialProfile && userDetails.socialProfile['instagram']
-            ? userDetails.socialProfile['instagram']
-            : ''
-        updateSocialProfile.discord = socialProfile['discord']
-          ? socialProfile['discord']
-          : userDetails.socialProfile && userDetails.socialProfile['discord']
-            ? userDetails.socialProfile['discord']
-            : ''
-        updateSocialProfile.telegram = socialProfile['telegram']
-          ? socialProfile['telegram']
-          : userDetails.socialProfile && userDetails.socialProfile['telegram']
-            ? userDetails.socialProfile['telegram']
-            : ''
-        updateSocialProfile.twitter = socialProfile['twitter']
-          ? socialProfile['twitter']
-          : userDetails.socialProfile && userDetails.socialProfile['twitter']
-            ? userDetails.socialProfile['twitter']
-            : ''
-      }
+      // const updateSocialProfile = {
+      //   instagram: '',
+      //   discord: '',
+      //   telegram: '',
+      //   twitter: ''
+      // }
+      // if (socialProfile) {
+      //   updateSocialProfile.instagram = socialProfile['instagram']
+      //     ? socialProfile['instagram']
+      //     : userDetails.socialProfile && userDetails.socialProfile['instagram']
+      //       ? userDetails.socialProfile['instagram']
+      //       : ''
+      //   updateSocialProfile.discord = socialProfile['discord']
+      //     ? socialProfile['discord']
+      //     : userDetails.socialProfile && userDetails.socialProfile['discord']
+      //       ? userDetails.socialProfile['discord']
+      //       : ''
+      //   updateSocialProfile.telegram = socialProfile['telegram']
+      //     ? socialProfile['telegram']
+      //     : userDetails.socialProfile && userDetails.socialProfile['telegram']
+      //       ? userDetails.socialProfile['telegram']
+      //       : ''
+      //   updateSocialProfile.twitter = socialProfile['twitter']
+      //     ? socialProfile['twitter']
+      //     : userDetails.socialProfile && userDetails.socialProfile['twitter']
+      //       ? userDetails.socialProfile['twitter']
+      //       : ''
+      // }
       let emailUpdate = false
       if (email) {
         const regexPattern = new RegExp(defaultDomain, 'g')
@@ -288,10 +286,8 @@ export class UserService {
         height: height ? height : userDetails.height,
         gender: gender ? gender : userDetails.gender,
         education: education ? education : userDetails.education,
-        religious: religious ? religious : userDetails.religious,
+        religion: religion ? religion : userDetails.religion,
         bio: bio ? bio : userDetails.bio,
-        profilePic: profilePic ? profilePic : userDetails.profilePic,
-        socialProfile: updateSocialProfile,
         email: emailUpdate ? email : userDetails.email,
         ZodiacSign: ZodiacSign ? ZodiacSign : userDetails.ZodiacSign,
         lookingFor: lookingFor ? lookingFor : userDetails.lookingFor

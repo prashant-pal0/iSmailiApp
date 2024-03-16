@@ -5,6 +5,7 @@ import { UserModule } from './modules/user/user.module'
 
 import { SwaggerTheme } from 'swagger-themes'
 import { CommonModule } from './modules/common/common.module'
+import { MatchModule } from './modules/matches/match.module'
 
 export function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
@@ -25,10 +26,7 @@ export function setupSwagger(app: INestApplication) {
     .build()
 
   const document = SwaggerModule.createDocument(app, options, {
-    include: [
-      UserModule,
-      CommonModule
-    ],
+    include: [UserModule, CommonModule, MatchModule],
   })
 
   if (document.components?.securitySchemes) {
@@ -37,7 +35,7 @@ export function setupSwagger(app: INestApplication) {
 
   const theme = new SwaggerTheme('v3')
   const themeOptions = {
-    explorer: false
+    explorer: false,
     // customCss:
     //   theme.getBuffer('classic').toString() +
     //   `

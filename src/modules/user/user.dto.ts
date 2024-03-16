@@ -11,7 +11,7 @@ import {
   Max,
   Min,
   MinLength,
-  ValidateIf
+  ValidateIf,
 } from 'class-validator'
 import { EducationLevel, GenderEnum, OnboardingTypeEnum, PurposeEnum, UserImageType, zodiacEnum } from './user.interface'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
@@ -49,7 +49,7 @@ export class OnboardDTO {
 export class VerifyOtpDto {
   @ApiProperty({ description: 'The verification code received on the provided data' })
   @IsString()
-  userId: string;
+  userId: string
 
   @ApiProperty({ description: 'The verification code received on the provided data' })
   @IsString()
@@ -88,45 +88,42 @@ export class LookingForDTO {
   @ApiProperty({ description: 'The ID of template.' })
   @IsNotEmpty()
   @IsEnum(PurposeEnum)
-  purpose: PurposeEnum;
+  purpose: PurposeEnum
 
-  
   @ApiProperty({ description: 'The ID of template.' })
   @IsNotEmpty()
   @IsString()
-  dreamDate: string;
+  dreamDate: string
 
   @ApiProperty({ description: 'The ID of template.' })
   @IsNotEmpty()
   @IsNumber()
   @Min(18)
-  ageFrom: number;
+  ageFrom: number
 
   @ApiProperty({ description: 'The ID of template.' })
   @IsNotEmpty()
   @IsNumber()
   @Max(99)
-  ageTo: number;
+  ageTo: number
 
   @ApiProperty({ description: 'The ID of template.' })
   @IsNotEmpty()
-  language: string;
+  language: string
 }
 
 export class ZodiacDTO {
   @IsNotEmpty()
   @IsEnum(zodiacEnum)
-  zodiac: zodiacEnum;
-
-
-  @IsNotEmpty()
-  @IsEnum(['Regularly', 'Never', 'Socially'])
-  smoke: string;
+  zodiac: zodiacEnum
 
   @IsNotEmpty()
   @IsEnum(['Regularly', 'Never', 'Socially'])
-  drink: string;
+  smoke: string
 
+  @IsNotEmpty()
+  @IsEnum(['Regularly', 'Never', 'Socially'])
+  drink: string
 }
 
 export class CreateProfileDTO {
@@ -135,7 +132,6 @@ export class CreateProfileDTO {
   @IsString()
   name: string
 
-  
   @ApiPropertyOptional({ description: 'Phone number of the user' })
   @IsOptional()
   @IsString()
@@ -156,32 +152,27 @@ export class CreateProfileDTO {
   @IsString()
   height: string
 
-  
   @IsNotEmpty()
   @IsEnum(EducationLevel)
-  education: EducationLevel;
+  education: EducationLevel
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsString()
   gender: string
-
-
 
   // @ApiPropertyOptional({ description: 'Bio of the user' })
   // @IsOptional()
   // @IsObject()
   // yourInterest:object
 
-
   @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsOptional()
-  lookingFor:LookingForDTO
+  lookingFor: LookingForDTO
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsOptional()
   @IsString()
   bio: string
-
 
   // @ApiPropertyOptional({ description: 'Social profiles of the user' })
   // @IsOptional()
@@ -194,15 +185,10 @@ export class CreateProfileDTO {
 
   @ApiPropertyOptional({ description: 'The email address of the user profile', format: 'email' })
   @IsOptional()
-  ZodiacSign:  ZodiacDTO
-
-
+  ZodiacSign: ZodiacDTO
 }
 
-
-
 export class AddUserImagesDTO {
-
   @ApiPropertyOptional({ description: 'Profile picture link' })
   @IsOptional()
   @IsString()
@@ -212,7 +198,6 @@ export class AddUserImagesDTO {
   @IsOptional()
   @IsString()
   imageType: UserImageType
-
 }
 
 export class RegisterDto {

@@ -10,11 +10,11 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
   imports: [
     TypeOrmModule.forFeature([Users, VerificationCodes]),
     ConfigModule.forRoot({
-      isGlobal: true
-    })
+      isGlobal: true,
+    }),
   ],
   controllers: [UserController],
   providers: [UserService, JwtService],
-  exports: [JwtService]
+  exports: [JwtService],
 })
 export class UserModule {}

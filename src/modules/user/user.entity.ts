@@ -1,9 +1,7 @@
-import { CreatedModified } from 'helper';
-import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { EducationLevel, RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface';
-import { LookingForDTO } from './user.dto';
-
-
+import { CreatedModified } from 'helper'
+import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm'
+import { EducationLevel, RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface'
+import { LookingForDTO } from './user.dto'
 
 @Entity()
 @Index(['userId', 'code'])
@@ -21,7 +19,6 @@ export class VerificationCodes extends CreatedModified implements VerificationCo
   verificationCodeType: VerificationCodeTypeEnum
 }
 
-
 @Entity()
 @Unique(['email', 'phone'])
 export class Users extends CreatedModified implements UserInterface {
@@ -31,7 +28,6 @@ export class Users extends CreatedModified implements UserInterface {
   @Index()
   @Column({ nullable: true })
   email: string
-
 
   @Column({ default: false })
   deleted: boolean
@@ -75,7 +71,6 @@ export class Users extends CreatedModified implements UserInterface {
   })
   lookingFor: object
 
-
   @Column({
     type: 'jsonb',
     nullable: true,
@@ -101,7 +96,6 @@ export class Users extends CreatedModified implements UserInterface {
 
   @Column({ default: false })
   isPhoneVerified: boolean
-
 
   @Column({ nullable: true })
   bio: string
@@ -131,18 +125,3 @@ export class userImages extends CreatedModified {
   @Column({ type: 'jsonb', nullable: true })
   userImages: object
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

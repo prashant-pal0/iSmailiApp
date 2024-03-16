@@ -10,7 +10,7 @@
 //   } from '@nestjs/common'
 //   import { errors } from 'error'
 //   import * as jwt from 'jsonwebtoken'
-  
+
 //   import { getUserBy } from './user.repository'
 //   import { UserService } from './user.service'
 //   @Injectable()
@@ -22,7 +22,7 @@
 //       req.user = await this.validateToken(req.headers.authorization)
 //       return true
 //     }
-  
+
 //     async validateToken(auth: string) {
 //       try {
 //         console.log('heerrrrrrrrrrrrr')
@@ -40,16 +40,15 @@
 //       }
 //     }
 //   }
-  
+
 //   export function Auth() {
 //     return applyDecorators(UseGuards(AuthGuard))
 //   }
-  
+
 //   export const GetUserId = createParamDecorator((data, req): string => {
 //     return req.args[0].user.id
 //   })
-  
+
 //   export const GetOperatorId = createParamDecorator((data, req): string => {
 //     return req.args[0].user.operatorId
 //   })
-  

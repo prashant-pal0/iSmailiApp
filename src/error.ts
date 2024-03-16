@@ -104,9 +104,8 @@ export const errors = {
   PhoneNotAllowed: new BadRequestException(`${commonText} login with phone number is not allowed`),
   InvalidEmail: new BadRequestException(`${commonText} Invalid email`),
   InvalidPhone: new BadRequestException(`${commonText} Invalid phone number`),
-  OTPWaitingPeriodOngoing: new BadRequestException(
-    // `${commonText} New OTP can be requested only after ${Constants.OTPWaitingPeriod} seconds`
-  ),
+  OTPWaitingPeriodOngoing: new BadRequestException(),
+  // `${commonText} New OTP can be requested only after ${Constants.OTPWaitingPeriod} seconds`
   InvalidVerificationCode: new BadRequestException(`${commonText} Verification code is invalid/expired`),
   InvalidLoginType: new NotAcceptableException(`${commonText} Invalid login type`),
   InvalidAccessToken: new BadRequestException(`${commonText} Invalid access token`),

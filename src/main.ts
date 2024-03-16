@@ -23,7 +23,7 @@ async function bootstrap() {
   )
   app.use(morgan('combined'))
   setupSwagger(app)
-console.log(`Hey this app run on ${process.env.PORT} `)
+  console.log(`Hey this app run on ${process.env.PORT} `)
   await app.listen(process.env.PORT)
 }
 bootstrap()

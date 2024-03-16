@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './modules/user/user.module';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './database/database.module';
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { UserModule } from './modules/user/user.module'
+import { ConfigModule } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { dataSourceOptions } from './database/database.module'
 import * as Joi from '@hapi/joi'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
-  imports: [UserModule,
+  imports: [
+    UserModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -19,8 +21,12 @@ import * as Joi from '@hapi/joi'
         // ...
       })
     }),
- ],
+    JwtModule.register({
+      secret: 'mykeysecret', // Change this to your own secret key
+      signOptions: { expiresIn: '1h' } // Example expiration (1 hour)
+    })
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

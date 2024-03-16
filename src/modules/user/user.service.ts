@@ -212,7 +212,7 @@ export class UserService {
   async generateToken(id: string, phone: string): Promise<string> {
     const payload: JwtPayload = { id, phone }
     // const configurationDetails = await getConfigurationBy({})
-    return this.jwtService.sign(payload, { expiresIn: '1h' })
+    return this.jwtService.sign(payload, {secret: 'mykeysecret'})
   }
 
   /** Adds or updates the user profile.

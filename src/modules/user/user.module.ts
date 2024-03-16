@@ -11,10 +11,6 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
     TypeOrmModule.forFeature([Users, VerificationCodes]),
     ConfigModule.forRoot({
       isGlobal: true
-    }),
-    JwtModule.register({
-      secret: 'secretsign', // Replace with your actual JWT secret
-      signOptions: { expiresIn: '1h' } // Adjust expiration as needed
     })
   ],
   controllers: [UserController],

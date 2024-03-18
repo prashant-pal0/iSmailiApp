@@ -18,10 +18,11 @@ async function bootstrap() {
     '/documentation',
     basicAuth({
       challenge: true,
-      users: { [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD },
+      users: { [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD }
     })
   )
   app.use(morgan('combined'))
+  app.enableCors()
   setupSwagger(app)
   console.log(`Hey this app run on ${process.env.PORT} `)
   await app.listen(process.env.PORT)

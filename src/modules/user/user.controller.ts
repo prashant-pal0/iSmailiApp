@@ -1,24 +1,54 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserDTO } from './user.dto';
-import { Auth, GetUserId } from './user.auth';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common'
+import { UserService } from './user.service'
+import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, UserDTO, VerifyOtpDto } from './user.dto'
+import { Auth, GetUserId } from './user.auth'
+import { ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger'
 
 @Controller('user')
-
 export class UserController {
-  constructor(private readonly userService:UserService ) {}
+  constructor(private readonly userService: UserService) {}
 
-  @Post('/signup')
-  async createUser(@Body() userDTO: UserDTO) {
-     return this.userService.createUser(userDTO);
+  @Post('/sendOtp')
+  async sendOtp(@Body() data: OnboardDTO): Promise<{ msg: string }> {
+    // let prefix = '+91'
+    // let phone = prefix.concat(data.phone)
+    return await this.userService.sendOtp(data)
   }
 
-  
-  @Post('/login')
-  async loginUser(@Body() userDTO: UserDTO) {
-      return this.userService.loginUser(userDTO);
-   }
-  
+  @Post('/verifyOtp')
+  async verifyOtp(@Body() data: VerifyOtpDto): Promise<{ msg: string }> {
+    // let prefix = '+91';
+    // let phone = prefix.concat(data.phone);
+    return await this.userService.verifyOTP(data)
+  }
+
+  @Post('/profile')
+  @Auth()
+  @ApiBearerAuth()
+  async addUserProfile(@GetUserId('id') userId: string, @Body() createProfileDTO: CreateProfileDTO) {
+    return await this.userService.addUserProfile(createProfileDTO, userId)
+  }
+
+  @Get('details')
+  @Auth()
+  @ApiForbiddenResponse({ description: 'Invalid access token' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Fetch profile details' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @HttpCode(HttpStatus.OK)
+  async getUserProfile(@GetUserId('id') userId: string) {
+    return await this.userService.getUserProfile(userId)
+  }
+
+  @Post('/image')
+  @Auth()
+  @ApiBearerAuth()
+  async addUserImages(@GetUserId('id') userId: string, @Body() addUserImagesDTO: AddUserImagesDTO) {
+    return await this.userService.addUserImages(addUserImagesDTO, userId)
+  }
+
+  @Get('/random')
+  async getRandomUser() {
+    return this.userService.getRandomUser()
+  }
 }
-
-

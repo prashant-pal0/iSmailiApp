@@ -3,13 +3,19 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: 'localhost',
-  username: 'postgres' ,
-  password: '9389110347',
-  database: 'postgres',
-  port: 5432,
-  synchronize: false,
-  entities: ['dist/modules/**/*.entity.js'],
+  host: process.env.POSTGRES_HOST,
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
+  port: parseInt(process.env.POSTGRES_PORT),
+  // ssl: true,
+  // extra: {
+  //   ssl: {
+  //     rejectUnauthorized: false
+  //   }
+  // },
+  synchronize: true,
+  entities: [__dirname + '/../**/**/*.entity.{js,ts}']
 }
 
 const initializeDataSource = async () => {

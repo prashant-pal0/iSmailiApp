@@ -18,3 +18,15 @@ export async function getUserDetails(userId: string) {
   const [result] = await (await dataSource).query(sql, [userId])
   return result
 }
+
+export async function getUserFind(phone: string) {
+  const sql = `
+    SELECT
+     *
+    FROM
+      "users" as "u"
+    WHERE
+      "u"."id" = $1`
+  const [result] = await (await dataSource).query(sql, [phone])
+  return result
+}

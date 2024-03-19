@@ -63,6 +63,7 @@ export async function uploadToS3(filename: string, newName?: string) {
       Key: newName || filename,
       Body: fileContent,
     }
+
     const s3UploadResult = await s3.upload(params).promise()
     try {
       await fs.unlinkSync(path.join('uploads', filename))

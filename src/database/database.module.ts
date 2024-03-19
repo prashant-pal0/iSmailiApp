@@ -21,7 +21,6 @@ export const dataSourceOptions: DataSourceOptions = {
 const initializeDataSource = async () => {
   const dataSourceConn = new DataSource(dataSourceOptions)
   try {
-    console.log('dataSourceOptions', dataSourceOptions)
     await dataSourceConn.initialize()
     return dataSourceConn
   } catch (err) {

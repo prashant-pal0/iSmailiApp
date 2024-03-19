@@ -24,9 +24,7 @@ export class AuthGuard implements CanActivate {
       if (auth.split(' ')[0] !== 'Bearer') throw new HttpException('Invalid access token', HttpStatus.FORBIDDEN)
       const token = auth.split(' ')[1]
       const decoded: any = jwt.verify(token, process.env.JWT_SECRET)
-      console.log('hello', decoded.id)
       const userDetails = await this.userRepository.findOne({ where: { id: decoded.id } })
-      console.log(userDetails)
       if (!userDetails) throw new Error('User not found')
       return decoded
     } catch (error) {

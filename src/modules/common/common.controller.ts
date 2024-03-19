@@ -37,7 +37,6 @@ export class CommonController {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
-          console.log(file)
           callback(null, Math.floor(100000 + Math.random() * 900000) + Date.now() + extname(file.originalname))
         },
       }),

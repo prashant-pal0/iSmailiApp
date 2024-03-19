@@ -70,14 +70,12 @@ export class UserService {
       const accountSid = this.configService.get('TWILIO_ACCOUNT_SID')
       const authToken = this.configService.get('TWILIO_AUTH_TOKEN')
 
-      console.log(accountSid, authToken)
       const client = require('twilio')(accountSid, authToken)
 
       const verificationCode = await this.getVerificationCode(
         phoneNumber
         // userId
       )
-      console.log(phoneNumber, data.data)
 
       client.messages
         .create({
@@ -129,7 +127,7 @@ export class UserService {
         parseInt(salt)
       )
       const existUser = await getUserBy({ phone: phoneNumber })
-      console.log('jp', existUser)
+  
       const verificationCodeDetails: VerificationCodeInterface = {
         userId: existUser?.id || uuid(),
         code: verificationCodeHash,
@@ -182,6 +180,7 @@ export class UserService {
       if (!userDetails) {
         const details = {
           id: data.userId,
+          phone: verificationCodeDetails.phone,
           isPhoneVerified: true,
           lastLogin: new Date()
         }

@@ -47,7 +47,7 @@ export async function pinataIPFS(filename: string) {
 export async function uploadToS3(filename: string, newName?: string) {
   const logger: Logger = new Logger()
   try {
-    console.log("Hello this is upload")
+    console.log('Hello this is upload')
     const accessKeyId = process.env.AWS_S3_ACCESS_KEY
     const secretAccessKey = process.env.AWS_S3_SECRET_KEY
     AWS.config.update({
@@ -57,7 +57,8 @@ export async function uploadToS3(filename: string, newName?: string) {
     })
     const s3 = new AWS.S3()
     const fs = require('fs')
-    const fileContent = await fs.readFileSync(__dirname + `/../../../uploads/${filename}`)
+
+    const fileContent = await fs.readFileSync(__dirname + `/../../../../uploads/${filename}`)
     const params = {
       Bucket: process.env.AWS_S3_BUCKET,
       Key: newName || filename,

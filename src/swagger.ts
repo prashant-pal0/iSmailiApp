@@ -10,7 +10,7 @@ import { MatchModule } from './modules/matches/match.module'
 export function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
     .setTitle('ISmaili BACKEND DOCUMENTATION')
-    .setDescripgit tion(
+    .setDescription(
       `
   This is ISmaili API documentation, APIs are divided into various categories based on usage of APIs.
   API are organized around REST. Our API are secured and has standard resource-oriented URLs, accepts form-encoded request 

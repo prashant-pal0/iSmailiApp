@@ -30,7 +30,7 @@ export class MatchService {
         id: uuid(),
         fromUser: userId,
         toUser: createMatchDto.toUser,
-        status: MatchStatusEnum.pending,
+        status: createMatchDto.status,
       }
 
       await this.matchesRepository.insert(obj)

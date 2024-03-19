@@ -19,7 +19,6 @@ export class CommonService {
   logger: Logger
   constructor(
     public readonly configService: ConfigService,
-    public readonly http: HttpService,
     @InjectRepository(IPFSlist)
     public readonly ipfsListRepository: Repository<IPFSlist>,
     @InjectRepository(S3List)
@@ -37,6 +36,7 @@ export class CommonService {
    */
   async getIPFS(filename: string, userId: string) {
     try {
+      console.log("hello this")
       const pinataResp = await pinataIPFS(filename)
       const obj: IPFSlistInterface = {
         id: uuid(),
@@ -60,6 +60,7 @@ export class CommonService {
    */
   async getS3Url(filename: string, userId: string) {
     try {
+      console.log("hello")
       const s3Resp = await uploadToS3(filename)
       const obj: S3FileInterface = {
         id: uuid(),

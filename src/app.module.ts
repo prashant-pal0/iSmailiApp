@@ -8,10 +8,13 @@ import { dataSourceOptions } from './database/database.module'
 import * as Joi from '@hapi/joi'
 import { JwtModule } from '@nestjs/jwt'
 import { MatchModule } from './modules/matches/match.module'
+import { CommonModule } from './modules/common/common.module'
+import { AuthGuard } from './modules/user/user.auth'
 
 @Module({
   imports: [
     UserModule,
+    CommonModule,
     MatchModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     ConfigModule.forRoot({
@@ -29,6 +32,6 @@ import { MatchModule } from './modules/matches/match.module'
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

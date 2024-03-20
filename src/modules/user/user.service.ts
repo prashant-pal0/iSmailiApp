@@ -8,7 +8,7 @@ import { JwtPayload, OnboardingTypeEnum, UserInterface, VerificationCodeInterfac
 import { InjectRepository } from '@nestjs/typeorm'
 import { Users, VerificationCodes } from './user.entity'
 import { Repository, Table } from 'typeorm'
-import { getUserBy, getUserDetails, getVerificationCodesBy } from './user.repository'
+import { getUserBy, getUserDetails, getVerificationCodesBy, userFilterQuery, userFilterQueryCount } from './user.repository'
 import { Constants, defaultDomain, getManyBy } from 'helper'
 import { JwtService } from '@nestjs/jwt'
 import { AddUserImagesDTO, CreateProfileDTO, LookingForDTO, OnboardDTO, UserFilterDTO, VerifyOtpDto, ZodiacDTO } from './user.dto'
@@ -193,7 +193,7 @@ export class UserService {
 
 */
   async addUserProfile(
-    { fullName, phone, bio, ZodiacSign, lookingFor, email, birthday, gender, religion, height, education }: CreateProfileDTO,
+    { fullName, phone, bio, zodiac, smoke, drink, lookingFor, email, birthday, gender, religion, height, education }: CreateProfileDTO,
     userId: string
   ) {
     try {
@@ -249,7 +249,9 @@ export class UserService {
         religion: religion ? religion : userDetails.religion,
         bio: bio ? bio : userDetails.bio,
         email: emailUpdate ? email : userDetails.email,
-        ZodiacSign: ZodiacSign ? ZodiacSign : userDetails.ZodiacSign,
+        zodiac: zodiac ? zodiac : userDetails.zodiac,
+        drink: drink ? drink : userDetails.drink,
+        smoke: smoke ? smoke : userDetails.smoke,
         lookingFor: lookingFor ? lookingFor : userDetails.lookingFor,
       }
       await this.userRepository.update({ id: userId }, data)
@@ -324,20 +326,62 @@ export class UserService {
     return users[randomIndex]
   }
 
-  async getUsersWithFilters(table: any, filterOptions: UserFilterDTO) {
+  async getUsersWithFilters({
+    fullName,
+    phone,
+    birthday,
+    religion,
+    height,
+    education,
+    gender,
+    bio,
+    email,
+    zodiac,
+    smoke,
+    drink,
+    page,
+    limit,
+  }: UserFilterDTO) {
     try {
-      console.log(table,filterOptions)
-      const getUsersByFilter = getManyBy<Users>(table)
-      const detail = await getUsersByFilter(filterOptions)
-      console.log(detail)
-      return detail
-      
+      const filterData = await userFilterQuery(
+        page,
+        limit,
+        fullName,
+        phone,
+        birthday,
+        religion,
+        height,
+        education,
+        gender,
+        bio,
+        email,
+        zodiac,
+        smoke,
+        drink
+      )
+      const listsCount = await userFilterQueryCount(
+        fullName,
+        phone,
+        birthday,
+        religion,
+        height,
+        education,
+        gender,
+        bio,
+        email,
+        zodiac,
+        smoke,
+        drink
+      )
+      if (!filterData) throw errors.UserNotFound
+
+      return {
+        message: 'Filtered Data fetched Successfully. ',
+        data: filterData,
+        count: listsCount,
+      }
     } catch (error) {
       throw new Error('Error fetching users with filters.')
     }
   }
-
- 
 }
-
-

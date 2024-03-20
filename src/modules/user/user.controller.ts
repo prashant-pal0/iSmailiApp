@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Query } from '@nestjs/common'
 import { UserService } from './user.service'
-import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, UserDTO, VerifyOtpDto } from './user.dto'
+import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, UserDTO, UserFilterDTO, VerifyOtpDto } from './user.dto'
 import { Auth, GetUserId } from './user.auth'
 import { ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger'
+import { Users } from './user.entity'
 
 @Controller('user')
 export class UserController {
@@ -50,5 +51,14 @@ export class UserController {
   @Get('/random')
   async getRandomUser() {
     return this.userService.getRandomUser()
+  }
+
+  @Get()
+  async getUsers(@Query() filterOptions: UserFilterDTO) {
+    try {
+      return await this.userService.getUsersWithFilters('Users',filterOptions);
+    } catch (error) {
+      throw new NotFoundException('Users not found.');
+    }
   }
 }

@@ -85,52 +85,47 @@ export class SocialProfileDTO {
   youtube: string
 }
 export class LookingForDTO {
-  @ApiProperty({ description: 'The ID of template.' })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The ID of template.' })
   @IsEnum(PurposeEnum)
-  purpose: PurposeEnum
+  purpose?: PurposeEnum;
 
-  @ApiProperty({ description: 'The ID of template.' })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The ID of template.' })
   @IsString()
-  dreamDate: string
+  dreamDate?: string;
 
-  @ApiProperty({ description: 'The ID of template.' })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The ID of template.' })
   @IsNumber()
   @Min(18)
-  ageFrom: number
+  ageFrom?: number;
 
-  @ApiProperty({ description: 'The ID of template.' })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The ID of template.' })
   @IsNumber()
   @Max(99)
-  ageTo: number
+  ageTo?: number;
 
-  @ApiProperty({ description: 'The ID of template.' })
-  @IsNotEmpty()
-  language: string
+  @ApiPropertyOptional({ description: 'The ID of template.' })
+  language?: string;
 }
 
 export class ZodiacDTO {
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The zodiac sign of the user.' })
   @IsEnum(zodiacEnum)
-  zodiac: zodiacEnum
+  zodiac?: zodiacEnum;
 
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The smoking habit of the user.' })
   @IsEnum(['Regularly', 'Never', 'Socially'])
-  smoke: string
+  smoke?: string;
 
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'The drinking habit of the user.' })
   @IsEnum(['Regularly', 'Never', 'Socially'])
-  drink: string
+  drink?: string;
 }
 
 export class CreateProfileDTO {
   @ApiPropertyOptional({ description: 'Name of the user' })
   @IsOptional()
   @IsString()
-  name: string
+  fullName: string
 
   @ApiPropertyOptional({ description: 'Phone number of the user' })
   @IsOptional()
@@ -200,6 +195,62 @@ export class AddUserImagesDTO {
   imageType: UserImageType
 }
 
+
+export class UserFilterDTO {
+  @ApiPropertyOptional({ description: 'Name of the user' })
+  @IsOptional()
+  @IsString()
+  fullName?: string;
+
+  @ApiPropertyOptional({ description: 'Phone number of the user' })
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @ApiPropertyOptional({ description: 'Birthday of the user' })
+  @IsOptional()
+  @IsString()
+  birthday?: string;
+
+  @ApiPropertyOptional({ description: 'Religion of the user' })
+  @IsOptional()
+  @IsString()
+  religion?: string;
+
+  @ApiPropertyOptional({ description: 'Height of the user' })
+  @IsOptional()
+  @IsString()
+  height?: string;
+
+  @ApiPropertyOptional({ description: 'Education level of the user' })
+  @IsOptional()
+  @IsEnum(EducationLevel)
+  education?: EducationLevel;
+
+  @ApiPropertyOptional({ description: 'Gender of the user' })
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @ApiPropertyOptional({ description: 'What the user is looking for' })
+  @IsOptional()
+  lookingFor?: LookingForDTO;
+
+  @ApiPropertyOptional({ description: 'Bio of the user' })
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
+  @ApiPropertyOptional({ description: 'Email address of the user' })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @ApiPropertyOptional({ description: 'Zodiac sign of the user' })
+  @IsOptional()
+  zodiacSign?: ZodiacDTO;
+}
+
 export class RegisterDto {
   @IsEmail()
   email: string
@@ -218,5 +269,7 @@ export class RegisterDto {
   @Matches(/^\+[1-9]\d{1,14}$/)
   phoneNumber: string
 }
+
+
 
 export default RegisterDto

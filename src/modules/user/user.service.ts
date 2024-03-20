@@ -253,18 +253,7 @@ export class UserService {
         lookingFor: lookingFor ? lookingFor : userDetails.lookingFor,
       }
       await this.userRepository.update({ id: userId }, data)
-      userDetails = await getUserBy({ id: userId }, [
-        'id',
-        'email',
-        'emailVerified',
-        'vaccount',
-        'name',
-        'phone',
-        'operatorId',
-        'bio',
-        'profilePic',
-        'socialProfile',
-      ])
+      userDetails = await getUserBy({ id: userId })
       const completeUserInfo = { ...userDetails }
 
       return {

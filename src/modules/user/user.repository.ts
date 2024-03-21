@@ -28,11 +28,11 @@ export async function userFilterQuery(
   birthday?: string,
   religion?: string,
   height?: string,
-  education?: EducationLevel,
+  education?: string,
   gender?: string,
   bio?: string,
   email?: string,
-  zodiac?: zodiacEnum,
+  zodiac?: string,
   smoke?: string,
   drink?: string
 ) {
@@ -71,11 +71,11 @@ export async function userFilterQueryCount(
   birthday?: string,
   religion?: string,
   height?: string,
-  education?: EducationLevel,
+  education?: string,
   gender?: string,
   bio?: string,
   email?: string,
-  zodiac?: zodiacEnum,
+  zodiac?: string,
   smoke?: string,
   drink?: string
 ) {

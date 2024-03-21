@@ -45,11 +45,9 @@ export class UserService {
       if (!data.countryCode) throw new NotFoundException('CountryCode not exists!')
       const phoneNumber = data.data
 
-      const fullPhoneNumber = `${data.countryCode}${data.data}`;
+      const fullPhoneNumber = `${data.countryCode}${data.data}`
 
       await this.phoneLogin(fullPhoneNumber)
-
-
 
       const accountSid = this.configService.get('TWILIO_ACCOUNT_SID')
       const authToken = this.configService.get('TWILIO_AUTH_TOKEN')

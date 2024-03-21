@@ -31,7 +31,9 @@ export interface UserInterface {
   email: string
   password?: string
   emailVerified?: boolean
-  gender: string
+  gender?: string
+  drink?: string
+  smoke?:string
   education: EducationLevel
   fbId?: string
   instaId?: string

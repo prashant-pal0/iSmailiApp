@@ -1,6 +1,6 @@
 import { CreatedModified } from 'helper'
 import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm'
-import { EducationLevel, RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface'
+import { EducationLevel, RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum, zodiacEnum } from './user.interface'
 import { LookingForDTO } from './user.dto'
 
 @Entity()
@@ -72,10 +72,15 @@ export class Users extends CreatedModified implements UserInterface {
   lookingFor: object
 
   @Column({
-    type: 'jsonb',
     nullable: true,
   })
-  ZodiacSign: object
+  zodiac: zodiacEnum
+
+  @Column({ nullable: true })
+  smoke: string
+
+  @Column({ nullable: true })
+  drink: string
 
   @Column({ nullable: true })
   fbId: string

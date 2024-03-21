@@ -11,7 +11,7 @@ import { Repository, Table } from 'typeorm'
 import { getUserBy, getUserDetails, getVerificationCodesBy, userFilterQuery, userFilterQueryCount } from './user.repository'
 import { Constants, defaultDomain, getManyBy } from 'helper'
 import { JwtService } from '@nestjs/jwt'
-import { AddUserImagesDTO, CreateProfileDTO, LookingForDTO, OnboardDTO, UserFilterDTO, VerifyOtpDto, ZodiacDTO } from './user.dto'
+import { AddUserImagesDTO, CreateProfileDTO, LookingForDTO, OnboardDTO, UserFilterDTO, VerifyOtpDto } from './user.dto'
 import { NotFoundError } from 'rxjs'
 import { error } from 'console'
 
@@ -44,7 +44,12 @@ export class UserService {
     if (data.loginType == OnboardingTypeEnum.PhoneOTP) {
       if (!data.countryCode) throw new NotFoundException('CountryCode not exists!')
       const phoneNumber = data.data
-      await this.phoneLogin(phoneNumber)
+
+      const fullPhoneNumber = `${data.countryCode}${data.data}`;
+
+      await this.phoneLogin(fullPhoneNumber)
+
+
 
       const accountSid = this.configService.get('TWILIO_ACCOUNT_SID')
       const authToken = this.configService.get('TWILIO_AUTH_TOKEN')
@@ -59,7 +64,7 @@ export class UserService {
       client.messages
         .create({
           body: `"Hello IsmailiApp User, Your OTP for verification is: ${verificationCode.verificationCode} Please enter this code to complete the verification process. Thank you,📱🔒`,
-          to: `${phoneNumber}`, // Text your number
+          to: `${fullPhoneNumber}`, // Text your number
           from: '+12568012812', // From a valid Twilio number
         })
         .then((message: any) => console.log(message.sid))

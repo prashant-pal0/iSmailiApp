@@ -86,12 +86,28 @@ export class SocialProfileDTO {
   youtube: string
 }
 export class LookingForDTO {
- 
+   @ApiPropertyOptional({ description: 'The ID of template.' })
+  @IsOptional()
+  @IsEnum(PurposeEnum)
+  purpose?: PurposeEnum;
+
+  @ApiPropertyOptional({ description: 'The ID of template.' })
+  @IsOptional()
+  @IsString()
+  dreamDate?: string;
+
+  @ApiPropertyOptional({ description: 'The ID of template.' })
+  @IsOptional()
+  @IsNumber()
+  ageFrom?: number;
+
+  @ApiPropertyOptional({ description: 'The ID of template.' })
+  @IsOptional()
+  @IsNumber()
+  ageTo?: number;
 }
 
-export class ZodiacDTO {
 
-}
 
 export class CreateProfileDTO {
   @ApiPropertyOptional({ description: 'Name of the user' })
@@ -119,9 +135,10 @@ export class CreateProfileDTO {
   @IsString()
   height: string;
 
+  @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsNotEmpty()
-  @IsEnum(EducationLevel)
-  education: EducationLevel;
+  @IsString()
+  education: string;
 
   @ApiPropertyOptional({ description: 'Bio of the user' })
   @IsString()
@@ -151,15 +168,15 @@ export class CreateProfileDTO {
   email: string;
 
   @ApiPropertyOptional({ description: 'The zodiac sign of the user.' })
-  @IsEnum(zodiacEnum)
-  zodiac?: zodiacEnum;
+  @IsString()
+  zodiac?:string;
 
   @ApiPropertyOptional({ description: 'The smoking habit of the user.' })
-  @IsEnum(['Regularly', 'Never', 'Socially'])
+  // @IsEnum(['Regularly', 'Never', 'Socially'])
   smoke?: string;
 
   @ApiPropertyOptional({ description: 'The drinking habit of the user.' })
-  @IsEnum(['Regularly', 'Never', 'Socially'])
+  // @IsEnum(['Regularly', 'Never', 'Socially'])
   drink?: string;
 }
 

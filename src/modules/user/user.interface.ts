@@ -34,7 +34,7 @@ export interface UserInterface {
   gender?: string
   drink?: string
   smoke?:string
-  education: EducationLevel
+  education: string
   fbId?: string
   instaId?: string
   name?: string

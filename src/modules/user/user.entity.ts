@@ -57,7 +57,7 @@ export class Users extends CreatedModified implements UserInterface {
   @Column({
     nullable: true,
   })
-  education: EducationLevel
+  education: string
 
   @Column({
     type: 'jsonb',
@@ -74,7 +74,7 @@ export class Users extends CreatedModified implements UserInterface {
   @Column({
     nullable: true,
   })
-  zodiac: zodiacEnum
+  zodiac: string
 
   @Column({ nullable: true })
   smoke: string

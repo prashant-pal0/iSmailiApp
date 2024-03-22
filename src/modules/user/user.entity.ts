@@ -20,6 +20,25 @@ export class VerificationCodes extends CreatedModified implements VerificationCo
 }
 
 @Entity()
+@Index(['userId'])
+export class UserGeoLocation extends CreatedModified {
+  @PrimaryColumn()
+  id: string
+
+  @PrimaryColumn()
+  userId: string
+
+  @Column({ nullable: true })
+  lat: string
+
+  @Column({ nullable: true })
+  long: string
+
+  @Column({ nullable: true })
+  cityName: string
+}
+
+@Entity()
 @Unique(['email', 'phone'])
 export class Users extends CreatedModified implements UserInterface {
   @PrimaryColumn()
@@ -88,9 +107,6 @@ export class Users extends CreatedModified implements UserInterface {
   @Column({ nullable: true })
   instaId: string
 
-  @Index()
-  @Column({ default: 1 })
-  operatorId: number
 
   @Column({ nullable: true })
   googleId: string

@@ -3,16 +3,15 @@ import { decryptString } from 'helpers'
 import { uuid } from 'uuidv4'
 
 import { ConfigService } from '@nestjs/config'
-import {
-  IPFSlistInterface,
-  S3FileInterface} from './common.interface'
+import { IPFSlistInterface, S3FileInterface } from './common.interface'
 
 import { pinataIPFS, uploadToS3 } from './pinata'
 
-import {  IPFSlist,  S3List } from './common.entity'
+import { IPFSlist, S3List } from './common.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { HttpService } from '@nestjs/axios'
+import * as geolib from 'geolib'
 
 @Injectable()
 export class CommonService {
@@ -22,7 +21,7 @@ export class CommonService {
     @InjectRepository(IPFSlist)
     public readonly ipfsListRepository: Repository<IPFSlist>,
     @InjectRepository(S3List)
-    public readonly s3ListRepository: Repository<S3List>,
+    public readonly s3ListRepository: Repository<S3List>
   ) {
     this.logger = new Logger()
   }
@@ -72,5 +71,36 @@ export class CommonService {
       this.logger.error(error.message)
       throw new BadRequestException(error.message)
     }
+  }
+
+  async getLocation(userLat: string, userLong: string, randomLat: string, randomLong: string) {
+    return new Promise((resolve, reject) => {
+      const navigator = {
+        geolocation: {
+          getCurrentPosition: (successCallback, errorCallback) => {
+            const dummyPosition = {
+              coords: {
+                latitude: userLat,
+                longitude: userLong,
+              },
+            }
+            successCallback(dummyPosition)
+          },
+        },
+      }
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const distance = await geolib.getDistance(position.coords, {
+            latitude: randomLat,
+            longitude: randomLong,
+          })
+          console.log(`You are ${distance} meters away from 28.9874621, 77.5341441`)
+          resolve(distance)
+        },
+        () => {
+          reject(new Error('Position could not be determined.'))
+        }
+      )
+    })
   }
 }

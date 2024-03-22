@@ -49,16 +49,18 @@ export class UserController {
   }
 
   @Get('/random')
-  async getRandomUser() {
-    return this.userService.getRandomUser()
+  @Auth()
+  @ApiBearerAuth()
+  async getRandomUser(@GetUserId('id') userId: string) {
+    return this.userService.getRandomUser(userId)
   }
 
   @Get('/filter')
   async getUsers(@Query() userFilterDTO: UserFilterDTO) {
     try {
-      return await this.userService.getUsersWithFilters(userFilterDTO);
+      return await this.userService.getUsersWithFilters(userFilterDTO)
     } catch (error) {
-      throw new NotFoundException('Users not found.');
+      throw new NotFoundException('Users not found.')
     }
   }
 }

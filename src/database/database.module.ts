@@ -10,9 +10,9 @@ export const dataSourceOptions: DataSourceOptions = {
   port: parseInt(process.env.POSTGRES_PORT),
   ssl: true,
   extra: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
+  ssl: {
+  rejectUnauthorized: false,
+  },
   },
   synchronize: true,
   entities: [__dirname + '/../**/**/*.entity.{js,ts}'],

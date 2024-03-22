@@ -6,14 +6,13 @@ import * as bcrypt from 'bcrypt'
 import { uuid } from 'uuidv4'
 import { JwtPayload, OnboardingTypeEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum } from './user.interface'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Users, VerificationCodes } from './user.entity'
-import { Repository, Table } from 'typeorm'
+import { UserGeoLocation, Users, VerificationCodes } from './user.entity'
+import { Repository } from 'typeorm'
 import { getUserBy, getUserDetails, getVerificationCodesBy, userFilterQuery, userFilterQueryCount } from './user.repository'
-import { Constants, defaultDomain, getManyBy } from 'helper'
+import { Constants, defaultDomain } from 'helper'
 import { JwtService } from '@nestjs/jwt'
-import { AddUserImagesDTO, CreateProfileDTO, LookingForDTO, OnboardDTO, UserFilterDTO, VerifyOtpDto } from './user.dto'
-import { NotFoundError } from 'rxjs'
-import { error } from 'console'
+import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, UserFilterDTO, VerifyOtpDto } from './user.dto'
+import { CommonService } from '../common/common.service'
 
 @Injectable()
 export class UserService {
@@ -26,8 +25,13 @@ export class UserService {
     public readonly verificationCodesRepository: Repository<VerificationCodes>,
     @InjectRepository(Users)
     public readonly userRepository: Repository<Users>,
+    @InjectRepository(UserGeoLocation)
+    public readonly userGeoLocationRepository: Repository<UserGeoLocation>,
     private readonly configService: ConfigService,
-    public readonly jwtService: JwtService
+    public readonly jwtService: JwtService,
+    public readonly commonService: CommonService
+
+    // public readonly navigator: Navigator
   ) {
     const accountSid = configService.get('TWILIO_ACCOUNT_SID')
     const authToken = configService.get('TWILIO_AUTH_TOKEN')
@@ -123,7 +127,6 @@ export class UserService {
 
   /** Verifies the OTP (One-Time Password) provided by the user.
    * @param {VerifyOTPDTO} verifyOTPDTO
-   * @param {number} operatorId
    */
   async verifyOTP(data: VerifyOtpDto): Promise<any> {
     try {
@@ -311,12 +314,34 @@ export class UserService {
     }
   }
 
-  async getRandomUser(): Promise<Users> {
+  async getRandomUser(userId: string) {
     // Fetch a random user from the database (you can customize this logic)
-    const users = await this.userRepository.find()
-    const randomIndex = Math.floor(Math.random() * users.length)
-    return users[randomIndex]
-  }
+    let users = await this.userRepository.find();
+    let randomIndex = Math.floor(Math.random() * users.length);
+    let randomUser = users[randomIndex].id;
+
+    if (randomUser === userId) {
+        do {
+            randomIndex = Math.floor(Math.random() * users.length);
+            randomUser = users[randomIndex].id;
+        } while (randomUser === userId);
+    }
+
+    const yourLocation = await this.userGeoLocationRepository.findOne({ where: { userId: userId } });
+    const randomUserLocation = await this.userGeoLocationRepository.findOne({ where: { userId: randomUser } });
+
+    const randomLat = randomUserLocation.lat;
+    const randomLong = randomUserLocation.long;
+
+    const awayFrom = await this.commonService.getLocation(yourLocation.lat, yourLocation.long, randomLat, randomLong);
+    console.log(awayFrom);
+    
+    return {
+        data: users[randomIndex],
+        distance: awayFrom,
+    };
+}
+
 
   async getUsersWithFilters({
     fullName,

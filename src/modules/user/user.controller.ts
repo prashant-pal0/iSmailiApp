@@ -2,9 +2,10 @@ import { Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Param, 
 import { UserService } from './user.service'
 import { AddUserImagesDTO, CreateProfileDTO, OnboardDTO, UserDTO, UserFilterDTO, VerifyOtpDto } from './user.dto'
 import { Auth, GetUserId } from './user.auth'
-import { ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger'
-import { Users } from './user.entity'
+import { ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
+
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

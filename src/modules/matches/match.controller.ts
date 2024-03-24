@@ -4,8 +4,10 @@ import { CreateMatchDto } from './match.dto'
 import { MatchService } from './match.service'
 import { Matches } from './match.entity'
 import { Auth, GetUserId } from '../user/user.auth'
-import { ApiBearerAuth } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+
+@ApiTags('Match')
 @Controller('matches')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}

@@ -7,6 +7,8 @@ import { CommonService } from './common.service'
 import { extname } from 'path'
 import { Auth, GetUserId } from '../user/user.auth'
 
+
+@ApiTags('Common')
 @Controller('common')
 export class CommonController {
   constructor(public readonly commonService: CommonService) {}

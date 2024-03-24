@@ -22,7 +22,7 @@ export function setupSwagger(app: INestApplication) {
     // .setExternalDoc('For more details click here', 'https://api-guide.owens.market')
     // .setTermsOfService('https://www.owens.market/terms-of-use')
     // .setContact('', '', 'techsupport@owens.market')
-    .addTag('User', 'User related operations')
+    // .addTag('User', 'User related operations')
     .build()
 
   const document = SwaggerModule.createDocument(app, options, {

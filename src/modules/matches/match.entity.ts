@@ -1,4 +1,4 @@
-import { CreatedModified } from 'helper'
+import { CreatedModified } from '../../../helper'
 import { Column, Entity, Index, PrimaryColumn, Unique } from 'typeorm'
 import { MatchStatusEnum, MatchesInterface } from './match.interface'
 

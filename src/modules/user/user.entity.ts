@@ -1,4 +1,4 @@
-import { CreatedModified } from 'helper'
+import { CreatedModified } from '../../../helper'
 import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm'
 import { EducationLevel, RolesEnum, UserInterface, VerificationCodeInterface, VerificationCodeTypeEnum, zodiacEnum } from './user.interface'
 import { LookingForDTO } from './user.dto'

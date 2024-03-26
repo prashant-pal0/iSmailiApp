@@ -1,4 +1,4 @@
-import { getManyBy, getSingleBy } from 'helper'
+import { getManyBy, getSingleBy } from '../../../helper'
 import { Users, VerificationCodes } from './user.entity'
 import { dataSource } from 'src/database/database.module'
 import { EducationLevel, zodiacEnum } from './user.interface'

@@ -1,4 +1,4 @@
-import { dataSource } from "src/database/database.module"
+import { dataSource } from "./src/database/database.module"
 import { CreateDateColumn, EntitySchema, ObjectType, UpdateDateColumn } from "typeorm"
 
 export abstract class CreatedModified {

@@ -4,7 +4,7 @@ import {
   S3FileInterface
 
 } from './common.interface'
-import { CreatedModified } from 'helper'
+import { CreatedModified } from '../../../helper'
 
 @Entity()
 export class IPFSlist extends CreatedModified implements IPFSlistInterface {

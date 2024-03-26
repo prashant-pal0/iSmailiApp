@@ -2,11 +2,14 @@ import { getManyBy, getSingleBy } from 'helper'
 import { Users, VerificationCodes } from './user.entity'
 import { dataSource } from 'src/database/database.module'
 import { EducationLevel, zodiacEnum } from './user.interface'
+import { S3List } from '../common/common.entity'
 
 export const getVerificationCodesBy = getSingleBy(VerificationCodes)
 
 export const getUserBy = getSingleBy(Users)
 export const getUsersBy = getManyBy(Users)
+
+export const getS3ListBy = getManyBy(S3List)
 
 export async function getUserDetails(userId: string) {
   const sql = `
@@ -60,7 +63,11 @@ export async function userFilterQuery(
       "u"."deleted" = $1
       ${query}
     LIMIT $2 OFFSET $3`
-  const result = await (await dataSource).query(sql, [false, limit, offsetCount])
+  const result = await (await dataSource).query(sql, [
+    false,
+    limit,
+    offsetCount
+  ])
   console.log(sql)
   return result
 }

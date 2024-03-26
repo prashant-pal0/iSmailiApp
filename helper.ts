@@ -54,5 +54,5 @@ export function getSingleBy<T = any>(
   export enum Constants {
     DefaultUserId = 1,
     OTPWaitingPeriod = 30,
-    OTPExpiry = 5,
+    OTPExpiry = 15,
   }

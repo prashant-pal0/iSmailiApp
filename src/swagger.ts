@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 
 import { UserModule } from './modules/user/user.module'
 
-import { SwaggerTheme } from 'swagger-themes'
+// import { SwaggerTheme } from 'swagger-themes'
 import { CommonModule } from './modules/common/common.module'
 import { MatchModule } from './modules/matches/match.module'
 
@@ -33,7 +33,7 @@ export function setupSwagger(app: INestApplication) {
     delete document.components.securitySchemes['bearerAuth'] // Remove the default Bearer Authorization
   }
 
-  const theme = new SwaggerTheme('v3')
+ 
   const themeOptions = {
     explorer: false,
     // customCss:

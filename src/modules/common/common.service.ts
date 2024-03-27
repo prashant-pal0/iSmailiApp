@@ -1,16 +1,14 @@
 import { BadRequestException, ForbiddenException, Injectable, Logger, HttpException, HttpStatus, forwardRef, Inject } from '@nestjs/common'
-import { decryptString } from 'helpers'
 import { uuid } from 'uuidv4'
 
 import { ConfigService } from '@nestjs/config'
 import { IPFSlistInterface, S3FileInterface } from './common.interface'
 
-import { pinataIPFS, uploadToS3 } from './pinata'
+import { uploadToS3 } from './pinata'
 
 import { IPFSlist, S3List } from './common.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { HttpService } from '@nestjs/axios'
 import * as geolib from 'geolib'
 
 @Injectable()
@@ -33,21 +31,21 @@ export class CommonService {
    * @returns {Promise<Object>}
    * @throws {BadRequestException} Error
    */
-  async getIPFS(filename: string, userId: string) {
-    try {
-      const pinataResp = await pinataIPFS(filename)
-      const obj: IPFSlistInterface = {
-        id: uuid(),
-        userId: userId,
-        ipfs: pinataResp.IpfsHash,
-      }
-      await this.ipfsListRepository.insert(obj)
-      return { data: { ipfs: process.env.IPFS + pinataResp.IpfsHash } }
-    } catch (error) {
-      this.logger.error(error.message)
-      throw new BadRequestException(error.message)
-    }
-  }
+  // async getIPFS(filename: string, userId: string) {
+  //   try {
+  //     const pinataResp = await pinataIPFS(filename)
+  //     const obj: IPFSlistInterface = {
+  //       id: uuid(),
+  //       userId: userId,
+  //       ipfs: pinataResp.IpfsHash,
+  //     }
+  //     await this.ipfsListRepository.insert(obj)
+  //     return { data: { ipfs: process.env.IPFS + pinataResp.IpfsHash } }
+  //   } catch (error) {
+  //     this.logger.error(error.message)
+  //     throw new BadRequestException(error.message)
+  //   }
+  // }
 
   /**
    * This function is to get the S3 url for a file
